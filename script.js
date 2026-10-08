@@ -7,31 +7,31 @@ const client = supabase.createClient(
     SUPABASE_KEY
 );
 
+let allBooks = [];
+
 const booksContainer = document.getElementById("books");
 const searchInput = document.getElementById("search");
 const sortSelect = document.getElementById("sort");
 const statusText = document.getElementById("status");
 
-let allBooks = [];
-
 async function loadBooks() {
 
     const { data, error } = await client
         .from("books")
-        .select(`
-            id,
-            title,
-            peice,
-            authors(name)
-        `);
+        .select("*");
+
+    console.log("DATA:", data);
+    console.log("ERROR:", error);
 
     if (error) {
         console.error(error);
-        statusText.textContent = error.message;
+        statusText.textContent =
+            "Ошибка: " + error.message;
         return;
     }
 
-    allBooks = data;
+    allBooks = data || [];
+
     statusText.textContent = "";
 
     displayBooks();
@@ -41,55 +41,100 @@ function displayBooks() {
 
     let books = [...allBooks];
 
-    const searchText = searchInput.value.toLowerCase();
+    const searchText =
+        searchInput.value.toLowerCase();
 
-    books = books.filter(book =>
-        book.title.toLowerCase().includes(searchText) ||
-        (book.authors?.name || "")
-            .toLowerCase()
-            .includes(searchText)
-    );
+    books = books.filter(book => {
 
-    switch (sortSelect.value) {
-        case "title-asc":
-            books.sort((a,b) => a.title.localeCompare(b.title));
-            break;
+        const title =
+            (book.title || "")
+            .toLowerCase();
 
-        case "title-desc":
-            books.sort((a,b) => b.title.localeCompare(a.title));
-            break;
+        return title.includes(searchText);
 
-        case "price-asc":
-            books.sort((a,b) => a.peice - b.peice);
-            break;
+    });
 
-        case "price-desc":
-            books.sort((a,b) => b.peice - a.peice);
-            break;
+    const sort = sortSelect.value;
+
+    if (sort === "title-asc") {
+
+        books.sort((a, b) =>
+            (a.title || "")
+            .localeCompare(b.title || "")
+        );
+
+    }
+
+    if (sort === "title-desc") {
+
+        books.sort((a, b) =>
+            (b.title || "")
+            .localeCompare(a.title || "")
+        );
+
+    }
+
+    if (sort === "price-asc") {
+
+        books.sort((a, b) =>
+            Number(a.peice || 0) -
+            Number(b.peice || 0)
+        );
+
+    }
+
+    if (sort === "price-desc") {
+
+        books.sort((a, b) =>
+            Number(b.peice || 0) -
+            Number(a.peice || 0)
+        );
+
     }
 
     booksContainer.innerHTML = "";
 
+    if (books.length === 0) {
+
+        booksContainer.innerHTML =
+            "<p>Книги не найдены</p>";
+
+        return;
+    }
+
     books.forEach(book => {
 
-        booksContainer.innerHTML += `
-            <div class="book">
-                <h2>${book.title}</h2>
+        const div =
+            document.createElement("div");
 
-                <p class="author">
-                    Автор:
-                    ${book.authors?.name ?? "Не указан"}
-                </p>
+        div.className = "book";
 
-                <p class="price">
-                    ${book.peice} ₸
-                </p>
-            </div>
+        div.innerHTML = `
+            <h2>${book.title}</h2>
+
+            <p class="author">
+                Автор ID: ${book.author_id}
+            </p>
+
+            <p class="price">
+                ${book.peice} ₸
+            </p>
         `;
+
+        booksContainer.appendChild(div);
+
     });
+
 }
 
-searchInput.addEventListener("input", displayBooks);
-sortSelect.addEventListener("change", displayBooks);
+searchInput.addEventListener(
+    "input",
+    displayBooks
+);
+
+sortSelect.addEventListener(
+    "change",
+    displayBooks
+);
 
 loadBooks();
