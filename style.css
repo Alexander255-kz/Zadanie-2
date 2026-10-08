@@ -1,0 +1,100 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#f5f7fb;
+    color:#1f2937;
+}
+
+.hero{
+    background:linear-gradient(135deg,#10b981,#059669);
+    color:white;
+    padding:60px 20px;
+    text-align:center;
+    box-shadow:0 4px 15px rgba(0,0,0,0.15);
+}
+
+.hero h1{
+    font-size:48px;
+    margin-bottom:10px;
+}
+
+.hero p{
+    font-size:18px;
+    opacity:.9;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:40px auto;
+}
+
+.controls{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+}
+
+input,
+select{
+    padding:14px 18px;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    font-size:16px;
+    background:white;
+}
+
+input{
+    flex:1;
+    min-width:250px;
+}
+
+select{
+    cursor:pointer;
+}
+
+.books{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+}
+
+.book{
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    transition:.3s;
+}
+
+.book:hover{
+    transform:translateY(-8px);
+}
+
+.book h2{
+    font-size:22px;
+    margin-bottom:12px;
+}
+
+.author{
+    color:#6b7280;
+    margin-bottom:15px;
+}
+
+.price{
+    font-size:24px;
+    font-weight:bold;
+    color:#10b981;
+}
+
+#status{
+    text-align:center;
+    margin-bottom:20px;
+    color:#6b7280;
+}
